@@ -45,6 +45,7 @@ public class Main {
             }
             System.out.print("Enter the number of units to order: ");
             int numberOfUnits = scanner.nextInt();
+            scanner.nextLine();
             if (numberOfUnits < 1 || numberOfUnits > foundItem.getUnitsInStock()) {
                 System.out.println("Invalid number of units entered: " + numberOfUnits);
                 System.out.println("The number of units ordered must be between 1 - " + foundItem.getUnitsInStock());
