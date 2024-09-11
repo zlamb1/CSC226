@@ -3,6 +3,7 @@ package structures.chapter1;
 import java.util.Arrays;
 
 public class SelectionSort {
+    // O(N^2) time complexity
     public static void sort(int[] array) {
         for (int i = 0; i < array.length - 1; i++) {
             int minIndex = i;
