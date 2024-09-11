@@ -28,11 +28,6 @@ public class Stack<T> implements IStack<T> {
     }
 
     @Override
-    public void ensureCapacity(int minCapacity) {
-        this.list.ensureCapacity(minCapacity);
-    }
-
-    @Override
     public void push(T t) {
         if (this.isFull()) {
             if (this.isResizeable) {
