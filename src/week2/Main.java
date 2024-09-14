@@ -70,6 +70,8 @@ public class Main {
         System.out.println(title + " -> ");
         int[][] testInputs = {
                 { 2, 6, 8, 1, 3, 9, 7, 10 },
+                { 0, 3, 7, 9, 10 },
+                { 1, 10 }
         };
         for (int i = 0; i < testInputs.length; i++) {
             System.out.println("Test " + (i + 1) + "). " + Arrays.toString(testInputs[i]));
@@ -84,12 +86,19 @@ public class Main {
         int[][] testInputs = {
                 { 3, 3, 3, 3 },
                 { 3, 2, 7, 2, 2, 6, 7 },
+                { 1, 9, 2, 3, 8, 1, 2, 7, 4, 1, 9, 4, 2, 0, 9, 4, 0, 1, 9, 2, 4 }
         };
         for (int i = 0; i < testInputs.length; i++) {
             System.out.println("Test " + (i + 1) + "). " + Arrays.toString(testInputs[i]));
             int finalI = i;
             System.out.println("Results: " + Arrays.toString(testFunction(() -> removeRepeats.call(testInputs[finalI]))));
         }
+        int[] randomData = new int[1000000];
+        for (int i = 0; i < randomData.length; i++) {
+            randomData[i] = (int) (Math.random() * 1000);
+        }
+        System.out.println("Test 4). ");
+        testFunction(() -> removeRepeats.call(randomData));
         System.out.println();
     }
 

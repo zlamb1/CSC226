@@ -61,16 +61,19 @@ public class Methods {
         return "";
     }
     // O(n)
-    // f(n) = 2n + 1
+    // f(n) = 2n + 3
     public static int[] moveZerosToFront(int[] arr) {
-        int nonZeroCounter = 0;
-        for (int i = 0; i < arr.length; i++) {
+        int zeroCount = 0, next = arr.length - 1;
+        for (int i = arr.length - 1; i >= 0; i--) {
             if (arr[i] != 0) {
-                nonZeroCounter++;
-            } else if (nonZeroCounter > 0) {
-                arr[i] = arr[i - nonZeroCounter];
-                arr[i - nonZeroCounter] = 0;
+                arr[next] = arr[i];
+                next--;
+            } else {
+                zeroCount++;
             }
+        }
+        for (int i = 0; i < zeroCount; i++) {
+            arr[i] = 0;
         }
         return arr;
     }
@@ -78,6 +81,7 @@ public class Methods {
     // f(n) = 8n + 2
     static int smallestDistanceNeighbors(int[] arr) {
         int minDistance = Integer.MAX_VALUE, index = -1;
+        if (arr.length == 2) return 0;
         for (int i = 1; i < arr.length - 1; i++) {
             int dist = Math.abs(arr[i] - arr[i - 1]);
             if (dist < minDistance) {
@@ -108,16 +112,12 @@ public class Methods {
         return result;
     }
     // O(n)
-    // f(n) = n + 1
+    // f(n) = 2n + 1
     static int[] removeRepeats2(int[] arr) {
         HashSet<Integer> set = new HashSet<>();
         for (int i : arr) {
             set.add(i);
         }
-        int[] newArray = new int[set.size()];
-        for (int i = 0; i < set.size(); i++) {
-            newArray[i] = set.iterator().next();
-        }
-        return newArray;
+        return set.stream().mapToInt(Number::intValue).toArray();
     }
 }
