@@ -16,6 +16,16 @@ public class ArrayStack<T> implements IStack<T> {
         this(initialCapacity, true);
     }
 
+    public ArrayStack(T[] array) {
+        this(array, true);
+    }
+
+    public ArrayStack(T[] array, boolean resizeable) {
+        this.array = array;
+        this.index = array.length - 1;
+        this.resizeable = resizeable;
+    }
+
     @SuppressWarnings("unchecked")
     public ArrayStack(int initialCapacity, boolean resizeable) {
         this.array = (T[]) new Object[initialCapacity];
@@ -29,6 +39,34 @@ public class ArrayStack<T> implements IStack<T> {
 
     public void setResizeable(boolean resizeable) {
         this.resizeable = resizeable;
+    }
+
+    public void popSome(int count) {
+        if (count > this.index + 1) {
+            return;
+        }
+        while (count > 0) {
+            this.pop();
+            count--;
+        }
+    }
+
+    public void swapTopTwo() {
+        if (this.index < 1) {
+            return;
+        }
+        T tmp = this.array[this.index];
+        this.array[this.index] = this.array[this.index - 1];
+        this.array[this.index - 1] = tmp;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void reverseStack() {
+        T[] newArray = (T[]) new Object[this.array.length];
+        for (int i = this.index; i >= 0; i--) {
+            newArray[this.index - i] = this.array[i];
+        }
+        this.array = newArray;
     }
 
     @Override

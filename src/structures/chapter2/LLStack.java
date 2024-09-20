@@ -1,5 +1,7 @@
 package structures.chapter2;
 
+import java.util.ArrayList;
+
 public class LLStack<T> implements IStack<T> {
     LLNode<T> head;
 
@@ -17,8 +19,8 @@ public class LLStack<T> implements IStack<T> {
 
     public LLStack(T[] array) {
         this.head = null;
-        for (int i = array.length - 1; i >= 0; i--) {
-            this.push(array[i]);
+        for (T t : array) {
+            this.push(t);
         }
     }
 
@@ -64,15 +66,16 @@ public class LLStack<T> implements IStack<T> {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("[");
+        ArrayList<LLNode<T>> nodes = new ArrayList<>();
         LLNode<T> cursor = this.head;
         while (cursor != null) {
-            T element = cursor.getElement();
-            if (element != null) {
-                stringBuilder.append(element);
-            }
+            nodes.add(cursor);
             cursor = cursor.getNext();
-            if (cursor != null) {
+        }
+        StringBuilder stringBuilder = new StringBuilder("[");
+        for (int i = nodes.size() - 1; i >= 0; i--) {
+            stringBuilder.append(nodes.get(i).getElement());
+            if (i != 0) {
                 stringBuilder.append(", ");
             }
         }

@@ -83,22 +83,4 @@ public class DLLStack<T> implements IStack<T> {
     public boolean isFull() {
         return false;
     }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("[");
-        DLLNode<T> cursor = this.head;
-        while (cursor != null) {
-            T element = cursor.getElement();
-            if (element != null) {
-                stringBuilder.append(element);
-            }
-            cursor = cursor.getNext();
-            if (cursor != null) {
-                stringBuilder.append(", ");
-            }
-        }
-        stringBuilder.append("]");
-        return stringBuilder.toString();
-    }
 }
