@@ -71,6 +71,10 @@ public class Main {
         testLinkedListStaticMethods();
         System.out.println();
         testArrayStackMethods();
+        System.out.println();
+        System.out.println("Auction Test");
+        Auction auction = new Auction();
+        auction.doAuction();
     }
 
 }
