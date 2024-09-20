@@ -6,31 +6,39 @@ import java.util.ArrayList;
  * Stack ADT implementation that is backed by the ArrayList class
  */
 
-public class Stack<T> implements IStack<T> {
+public class ListStack<T> implements IStack<T> {
     private static final int INITIAL_CAPACITY = 16;
 
     private final ArrayList<T> list;
     private int index;
-    private boolean isResizeable;
+    private boolean resizeable;
 
-    public Stack() {
+    public ListStack() {
         this(true);
     }
 
-    public Stack(boolean isResizeable) {
-        this(INITIAL_CAPACITY, isResizeable);
+    public ListStack(boolean resizeable) {
+        this(INITIAL_CAPACITY, resizeable);
     }
 
-    public Stack(int initialCapacity, boolean isResizeable) {
+    public ListStack(int initialCapacity, boolean resizeable) {
         this.index = -1;
         this.list = new ArrayList<T>(initialCapacity);
-        this.isResizeable = isResizeable;
+        this.resizeable = resizeable;
+    }
+
+    public boolean isResizeable() {
+        return resizeable;
+    }
+
+    public void setResizeable(boolean resizeable) {
+        this.resizeable = resizeable;
     }
 
     @Override
     public void push(T t) {
         if (this.isFull()) {
-            if (this.isResizeable) {
+            if (this.resizeable) {
                 this.index++;
                 this.list.add(t);
             } else {
@@ -71,5 +79,23 @@ public class Stack<T> implements IStack<T> {
     @Override
     public boolean isFull() {
         return this.index == this.list.size() - 1;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("[");
+        for (int i = 0; i < list.size(); i++) {
+            T t = list.get(i);
+            if (t != null) {
+                stringBuilder.append(t);
+            } else {
+                stringBuilder.append("null");
+            }
+            if (i != list.size() - 1) {
+                stringBuilder.append(", ");
+            }
+        }
+        stringBuilder.append("]");
+        return stringBuilder.toString();
     }
 }

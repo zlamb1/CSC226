@@ -46,4 +46,22 @@ public class LLStack<T> implements IStack<T> {
     public boolean isFull() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("[");
+        LLNode<T> cursor = this.head;
+        while (cursor != null) {
+            T element = cursor.getElement();
+            if (element != null) {
+                stringBuilder.append(element);
+            }
+            cursor = cursor.getNext();
+            if (cursor != null) {
+                stringBuilder.append(", ");
+            }
+        }
+        stringBuilder.append("]");
+        return stringBuilder.toString();
+    }
 }
