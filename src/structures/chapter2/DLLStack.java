@@ -1,34 +1,51 @@
 package structures.chapter2;
 
-public class LLStack<T> implements IStack<T> {
-    LLNode<T> head;
+public class DLLStack<T> implements IStack<T> {
+    DLLNode<T> head, tail;
 
-    public LLStack() {
+    public DLLStack() {
         this.head = null;
+        this.tail = null;
     }
 
-    public LLStack(T firstElement) {
-        this.head = new LLNode<T>(firstElement);
+    public DLLStack(T firstElement) {
+        this.head = new DLLNode<T>(firstElement);
+        this.tail = this.head;
     }
 
-    public LLStack(LLNode<T> head) {
+    public DLLStack(DLLNode<T> head) {
         this.head = head;
+        this.tail = head;
+        while (this.tail.getNext() != null) {
+            this.tail = this.tail.getNext();
+        }
     }
 
-    public LLStack(T[] array) {
+    public DLLStack(T[] array) {
         this.head = null;
+        this.tail = null;
         for (int i = array.length - 1; i >= 0; i--) {
             this.push(array[i]);
         }
     }
 
-    public LLNode<T> getHead() {
+    public DLLNode<T> getHead() {
         return this.head;
+    }
+
+    public DLLNode<T> getTail() {
+        return this.tail;
     }
 
     @Override
     public void push(T t) {
-        this.head = new LLNode<T>(t, this.head);
+        DLLNode<T> oldHead = this.head;
+        this.head = new DLLNode<>(t, null, oldHead);
+        if (oldHead == null) {
+            this.tail = this.head;
+        } else {
+            oldHead.setPrev(this.head);
+        }
     }
 
     @Override
@@ -37,6 +54,11 @@ public class LLStack<T> implements IStack<T> {
             throw new StackUnderflowException();
         }
         this.head = this.head.getNext();
+        if (this.head == null) {
+            this.tail = null;
+        } else {
+            this.head.setPrev(null);
+        }
     }
 
     @Override
@@ -65,7 +87,7 @@ public class LLStack<T> implements IStack<T> {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("[");
-        LLNode<T> cursor = this.head;
+        DLLNode<T> cursor = this.head;
         while (cursor != null) {
             T element = cursor.getElement();
             if (element != null) {

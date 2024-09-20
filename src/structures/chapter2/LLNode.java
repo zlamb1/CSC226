@@ -1,7 +1,7 @@
 package structures.chapter2;
 
 /**
- * Singly linked list ADT implementation
+ * Singly-linked list ADT implementation
  */
 
 public class LLNode<T> {

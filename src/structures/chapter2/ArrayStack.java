@@ -16,6 +16,7 @@ public class ArrayStack<T> implements IStack<T> {
         this(initialCapacity, true);
     }
 
+    @SuppressWarnings("unchecked")
     public ArrayStack(int initialCapacity, boolean resizeable) {
         this.array = (T[]) new Object[initialCapacity];
         this.index = -1;
@@ -90,6 +91,7 @@ public class ArrayStack<T> implements IStack<T> {
         return stringBuilder.toString();
     }
 
+    @SuppressWarnings("unchecked")
     private void ensureCapacity(int minCapacity) {
         int newCapacity = this.array.length;
         while (newCapacity < minCapacity) {
