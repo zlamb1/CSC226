@@ -51,20 +51,14 @@ public class Methods {
         return stringBuilder.toString();
     }
     public static String displayListInReverse(LLNode<Integer> head) {
-        LLStack<Integer> reverseStack = new LLStack<>();
+        StringBuilder stringBuilder = new StringBuilder();
         LLNode<Integer> cursor = head;
         while (cursor != null) {
-            reverseStack.push(cursor.getElement());
-            cursor = cursor.getNext();
-        }
-        StringBuilder stringBuilder = new StringBuilder();
-        while (!reverseStack.isEmpty()) {
-            int current = reverseStack.top();
-            reverseStack.pop();
-            stringBuilder.append(current);
-            if (!reverseStack.isEmpty()) {
+            stringBuilder.append(cursor.getElement());
+            if (cursor.getNext() != null) {
                 stringBuilder.append(" ");
             }
+            cursor = cursor.getNext();
         }
         return stringBuilder.toString();
     }
