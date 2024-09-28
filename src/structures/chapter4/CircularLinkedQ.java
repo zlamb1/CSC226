@@ -61,18 +61,24 @@ public class CircularLinkedQ<T> implements IQueue<T> {
     }
 
     @Override
+    public int getSize() {
+         return this.size;
+    }
+
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
         if (!this.isEmpty()) {
-            LLNode<T> cursor = this.rear.getNext();
+            LLNode<T> front = this.rear.getNext();
+            LLNode<T> cursor = front;
             do {
                 stringBuilder.append(cursor.getElement().toString());
                 cursor = cursor.getNext();
-                if (cursor != this.rear.getNext()) {
+                if (cursor != front) {
                     stringBuilder.append(", ");
                 }
-            } while (cursor != this.rear.getNext());
+            } while (cursor != front);
         }
         stringBuilder.append("]");
         return stringBuilder.toString();

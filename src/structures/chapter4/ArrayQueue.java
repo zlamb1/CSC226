@@ -61,6 +61,11 @@ public class ArrayQueue<T> implements IQueue<T> {
     }
 
     @Override
+    public int getSize() {
+        return this.size;
+    }
+
+    @Override
     public boolean isEmpty() {
         return this.front == -1;
     }
