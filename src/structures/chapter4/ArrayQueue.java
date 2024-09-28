@@ -53,7 +53,7 @@ public class ArrayQueue<T> implements IQueue<T> {
     }
 
     @Override
-    public T peekFront() {
+    public T peek() {
         if (this.isEmpty()) {
             return null;
         }

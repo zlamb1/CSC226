@@ -8,10 +8,12 @@ public class CircularLinkedQ<T> implements IQueue<T> {
 
     public CircularLinkedQ() {
         this.rear = null;
+        this.size = 0;
     }
 
     public CircularLinkedQ(T[] array) {
         this.rear = null;
+        this.size = array.length;
         for (T element : array) {
             this.enqueue(element);
         }
@@ -48,7 +50,7 @@ public class CircularLinkedQ<T> implements IQueue<T> {
     }
 
     @Override
-    public T peekFront() {
+    public T peek() {
         if (this.isEmpty()) {
             return null;
         }

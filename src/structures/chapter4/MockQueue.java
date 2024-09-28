@@ -21,7 +21,7 @@ public class MockQueue<T> implements IQueue<T> {
     }
 
     @Override
-    public T peekFront() {
+    public T peek() {
         return queue.peek();
     }
 
