@@ -93,7 +93,28 @@ public class Driver {
         System.out.println(coll);
     }
 
+    public static void testLinkedCollection() {
+        LinkedCollection<Integer> coll = new LinkedCollection<>(), coll2 = new LinkedCollection<>();
+        System.out.println(coll);
+        coll.add(1);
+        coll.add(2);
+        coll.add(3);
+        System.out.println(coll);
+        coll.remove(3);
+        System.out.println(coll);
+        coll.add(3);
+        coll.add(4);
+        coll.add(5);
+        System.out.println(coll);
+        Iterator<Integer> iter = coll.iterator();
+        while (iter.hasNext()) {
+            System.out.println(iter.next());
+            iter.remove();
+        }
+        System.out.println(coll);
+    }
+
     public static void main(String[] args) {
-        testSortedArrayCollection();
+        testLinkedCollection();
     }
 }

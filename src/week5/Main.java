@@ -23,33 +23,26 @@ public class Main {
                 1, 1, 2, 2, 1, 1
         }), coll4 = new ArrayCollection<>(new Integer[] { 1, 2, 3 });
         System.out.println("coll1: " + coll);
-        System.out.println("removeAll(4)");
-        coll.removeAll(4);
+        System.out.println("removeAll(4): " + coll.removeAll(4));
         System.out.println("coll1: " + coll);
-        System.out.println("removeAll(3)");
-        coll.removeAll(3);
+        System.out.println("removeAll(3): " + coll.removeAll(3));
         System.out.println("coll1: " + coll);
         System.out.println("coll2: " + coll2);
-        System.out.println("removeAll(3)");
-        coll2.removeAll(3);
+        System.out.println("removeAll(3): " + coll2.removeAll(3));
         System.out.println("coll2: " + coll2);
         System.out.println("coll3: " + coll3);
-        System.out.println("removeAll(2)");
-        coll3.removeAll(2);
+        System.out.println("removeAll(2): " + coll3.removeAll(2));
         System.out.println("coll3: " + coll3);
-        System.out.println("removeAll(1)");
-        coll3.removeAll(1);
+        System.out.println("removeAll(1): " + coll3.removeAll(1));
         System.out.println("coll3: " + coll3);
         System.out.println("coll4: " + coll4);
-        System.out.println("removeAll(0)");
-        coll4.removeAll(4);
+        System.out.println("removeAll(0): " + coll4.removeAll(0));
         System.out.println("coll4: " + coll4);
     }
 
     private static void testWordFrequency() {
         String regex = "[,\n?!-.]";
-        String stripped = excerpt.strip().replaceAll(regex, "").replaceAll(",", "");
-        String[] words = stripped.split(" ");
+        String[] words = excerpt.strip().replaceAll(regex, "").split(" ");
         WordFrequencyAnalyzer wf = new WordFrequencyAnalyzer();
         for (String word : words) {
             wf.add(word.toLowerCase());
