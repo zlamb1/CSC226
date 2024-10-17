@@ -1,0 +1,29 @@
+package structures.chapter6;
+
+import java.util.Iterator;
+
+public class Driver {
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>(new Integer[] {
+                1, 2, 3, 4, 5
+        });
+
+        System.out.println(list);
+        list.remove(1);
+        System.out.println(list);
+        list.add(6);
+        System.out.println(list);
+
+        for (int i : list) {
+            System.out.println(i);
+        }
+
+        Iterator<Integer> iterator = list.iterator();
+        for (int i = 0; i < 3 && iterator.hasNext(); i++) {
+            iterator.next();
+            iterator.remove();
+        }
+
+        System.out.println(list);
+    }
+}
