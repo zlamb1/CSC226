@@ -41,7 +41,7 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
 
     @Override
     public void add(int index, T element) {
-        boundsCheck(index);
+        this.boundsCheck(index);
         super.ensureCapacity(super.size + 1);
         for (int i = super.size - 1; i >= index; i--) {
             super.array[i + 1] = super.array[i];
@@ -52,7 +52,7 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
 
     @Override
     public T set(int index, T element) {
-        boundsCheck(index);
+        this.boundsCheck(index);
         T oldElement = super.array[index];
         super.array[index] = element;
         return oldElement;

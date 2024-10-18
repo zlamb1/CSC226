@@ -65,7 +65,7 @@ public class ArrayCollection<T> implements ICollection<T> {
 
     @Override
     public boolean contains(T element) {
-        return this.get(element) == null;
+        return this.get(element) != null;
     }
 
     @Override
