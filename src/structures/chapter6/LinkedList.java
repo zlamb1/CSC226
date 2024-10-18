@@ -3,6 +3,7 @@ package structures.chapter6;
 import structures.chapter2.LLNode;
 import structures.chapter5.ICollection;
 
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class LinkedList<T> implements IList<T> {
@@ -85,6 +86,11 @@ public class LinkedList<T> implements IList<T> {
     @Override
     public T remove(int index) {
         return null;
+    }
+
+    @Override
+    public void sort(Comparator<T> comp) {
+
     }
 
     @Override

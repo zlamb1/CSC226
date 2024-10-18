@@ -3,16 +3,15 @@ package structures.chapter5;
 import java.util.Iterator;
 
 public class ArrayCollection<T> implements ICollection<T> {
-    private static final int DEFAULT_CAPACITY = 16;
-    private T[] array;
-    private int size;
+    protected static final int DEFAULT_CAPACITY = 16;
+    protected T[] array;
+    protected int size;
 
     private final class ArrayIterator implements Iterator<T> {
-        private final ArrayCollection<T> coll;
         private int index = 0;
 
-        public ArrayIterator(ArrayCollection<T> coll) {
-            this.coll = coll;
+        public ArrayIterator() {
+
         }
 
         @Override
@@ -32,7 +31,6 @@ public class ArrayCollection<T> implements ICollection<T> {
         }
     }
 
-
     @SuppressWarnings("unchecked")
     public ArrayCollection() {
         this.array = (T[]) new Object[DEFAULT_CAPACITY];
@@ -46,10 +44,11 @@ public class ArrayCollection<T> implements ICollection<T> {
 
     @Override
     public boolean add(T element) {
-        if (this.size == this.array.length || element == null) {
-            return false;
+        if (element == null) {
+            throw new IllegalArgumentException();
         }
-        this.ensureCapacity();
+
+        this.ensureCapacity(this.size + 1);
         this.array[this.size] = element;
         this.size++;
         return true;
@@ -57,7 +56,7 @@ public class ArrayCollection<T> implements ICollection<T> {
 
     @Override
     public T get(T element) {
-        int index = this.find(element);
+        int index = this.linearSearch(element);
         if (index == -1) {
             return null;
         }
@@ -71,8 +70,8 @@ public class ArrayCollection<T> implements ICollection<T> {
 
     @Override
     public boolean remove(T element) {
-        int index = find(element);
-        if (index == -1) {
+        int index = this.linearSearch(element);
+        if (index < 0) {
             return false;
         }
         this.size--;
@@ -143,7 +142,7 @@ public class ArrayCollection<T> implements ICollection<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new ArrayIterator(this);
+        return new ArrayIterator();
     }
 
     @Override
@@ -169,20 +168,26 @@ public class ArrayCollection<T> implements ICollection<T> {
     }
 
     @SuppressWarnings("unchecked")
-    protected boolean ensureCapacity() {
-        if (this.size < this.array.length - 1) {
-            return false;
+    protected boolean ensureCapacity(int minCapacity) {
+        if (this.array.length < minCapacity) {
+            int newCapacity = this.array.length;
+            while (newCapacity < minCapacity) {
+                newCapacity = (int) (newCapacity * 2.0);
+            }
+            T[] newArray = (T[]) new Object[newCapacity];
+            for (int i = 0; i < this.size; i++) {
+                newArray[i] = this.array[i];
+            }
+            this.array = newArray;
+            return true;
         }
-        T[] newArray = (T[]) new Object[this.array.length * 2];
-        for (int i = 0; i < this.size; i++) {
-            newArray[i] = this.array[i];
-        }
-        this.array = newArray;
-        return true;
+        return false;
     }
 
-    protected int find(T element) {
-        if (this.size == 0 || element == null) return -1;
+    protected int linearSearch(T element) {
+        if (element == null) {
+            throw new IllegalArgumentException();
+        }
         for (int i = 0; i < this.size; i++) {
             if (this.array[i].equals(element)) {
                 return i;

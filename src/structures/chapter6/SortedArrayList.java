@@ -5,7 +5,7 @@ import structures.chapter5.IComparable;
 import java.util.Comparator;
 
 public class SortedArrayList<T> extends ArrayList<T> {
-    private final Comparator<T> comparator;
+    protected final Comparator<T> comparator;
 
     public SortedArrayList() {
         this.comparator = (o1, o2) -> {

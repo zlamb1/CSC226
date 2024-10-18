@@ -1,187 +1,73 @@
 package structures.chapter5;
 
-import java.util.Iterator;
+import java.util.Comparator;
 
-public class SortedArrayCollection<T extends IComparable<T>> implements ICollection<T> {
-    private static final int DEFAULT_CAPACITY = 16;
-    private T[] array;
-    private int size;
+public class SortedArrayCollection<T> extends ArrayCollection<T> {
+    protected Comparator<T> comparator;
 
-    private class SortedArrayIterator implements Iterator<T> {
-        private SortedArrayCollection<T> coll;
-        private int index = 0;
-
-        public SortedArrayIterator(SortedArrayCollection<T> coll) {
-            this.coll = coll;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return this.index < size;
-        }
-
-        @Override
-        public T next() {
-            return array[index++];
-        }
-
-        @Override
-        public void remove() {
-            index--;
-            for (int i = index + 1; i < size; i++) {
-                array[i - 1] = array[i];
+    public SortedArrayCollection() {
+        this.comparator = new Comparator<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                try {
+                    return ((IComparable<T>) o1).compareTo(o2);
+                } catch (ClassCastException e) {
+                    System.out.println(e.getMessage());
+                    return 0;
+                }
             }
-            size--;
-        }
+        };
     }
 
-    @SuppressWarnings("unchecked")
-    public SortedArrayCollection() {
-        this.array = (T[]) new IComparable[DEFAULT_CAPACITY];
-        this.size = 0;
+    public SortedArrayCollection(Comparator<T> comparator) {
+        this.comparator = comparator;
     }
 
     @Override
     public boolean add(T element) {
-        int index = binarySearch(element);
-        if (index < 0) {
-            index = -index - 1;
+        if (element == null) {
+            throw new IllegalArgumentException();
         }
-        this.ensureCapacity();
-        for (int i = this.size - 1; i >= index; i--) {
-            this.array[i + 1] = this.array[i];
+
+        super.ensureCapacity(super.size + 1);
+        int index = this.binarySearch(element);
+        if (index < 0) index = -index - 1;
+        for (int i = super.size - 1; i >= index; i--) {
+            super.array[i + 1] = super.array[i];
         }
-        this.array[index] = element;
-        this.size++;
+        super.array[index] = element;
+        super.size++;
         return true;
     }
 
     @Override
     public T get(T element) {
-        if (this.size == 0 || element == null) {
+        int index = this.binarySearch(element);
+        if (index > 0) {
             return null;
         }
-        int index = binarySearch(element);
-        if (index < 0) {
-            return null;
-        }
-        return this.array[index];
-    }
-
-    @Override
-    public boolean contains(T element) {
-        if (this.size == 0 || element == null) {
-            return false;
-        }
-        for (int i = 0; i < this.size; i++) {
-            if (this.array[i].equals(element)) {
-                return true;
-            }
-        }
-        return false;
+        return super.array[index];
     }
 
     @Override
     public boolean remove(T element) {
-        if (this.size == 0) {
+        int index = this.binarySearch(element);
+        if (index > 0) {
             return false;
         }
-        int index = binarySearch(element);
-        if (index < 0) {
-            return false;
-        }
-        for (int i = index + 1; i < this.size; i++) {
-            this.array[i - 1] = this.array[i];
-        }
-        this.size--;
+        super.array[index] = super.array[super.size];
+        super.size--;
         return true;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return this.size == 0;
-    }
-
-    @Override
-    public boolean isFull() {
-        return this.size == this.array.length;
-    }
-
-    @Override
-    public int size() {
-        return this.size;
-    }
-
-    @Override
-    public T[] toArray() {
-        return this.array.clone();
-    }
-
-    @Override
-    public void clear() {
-        this.size = 0;
-    }
-
-    @Override
-    public boolean addAll(ICollection<T> other) {
-        for (T element : other) {
-            this.add(element);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean retainAll(ICollection<T> other) {
-        boolean modified = false;
-        Iterator<T> iter = this.iterator();
-        while (iter.hasNext()) {
-            T el = iter.next();
-            if (!other.contains(el)) {
-                iter.remove();
-                modified = true;
-            }
-        }
-        return modified;
-    }
-
-    @Override
-    public boolean removeAll(ICollection<T> other) {
-        boolean modified = false;
-        for (T el : other) {
-            if (this.remove(el)) {
-                modified = true;
-            }
-        }
-        return modified;
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        return new SortedArrayIterator(this);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        for (int i = 0; i < this.size; i++) {
-            sb.append(this.array[i]);
-            if (i != this.size - 1) {
-                sb.append(", ");
-            }
-        }
-        sb.append("]");
-        return sb.toString();
     }
 
     protected int binarySearch(T element) {
         if (element == null) {
             throw new IllegalArgumentException();
         }
-        int low = 0, high = this.size - 1, mid = 0;
+        int low = 0, high = super.size - 1, mid = 0;
         while (low <= high) {
             mid = low + (high - low) / 2;
-            int cmp = element.compareTo(this.array[mid]);
+            int cmp = comparator.compare(element, super.array[mid]);
             if (cmp > 0) {
                 low = mid + 1;
             } else if (cmp < 0) {
@@ -191,18 +77,5 @@ public class SortedArrayCollection<T extends IComparable<T>> implements ICollect
             }
         }
         return -(low + 1);
-    }
-
-    @SuppressWarnings("unchecked")
-    protected boolean ensureCapacity() {
-        if (this.size < this.array.length - 1) {
-            return false;
-        }
-        T[] newArray = (T[]) new IComparable[this.array.length * 2];
-        for (int i = 0; i < this.size; i++) {
-            newArray[i] = this.array[i];
-        }
-        this.array = newArray;
-        return true;
     }
 }
