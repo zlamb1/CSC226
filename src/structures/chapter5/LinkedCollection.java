@@ -54,6 +54,13 @@ public class LinkedCollection<T> implements ICollection<T> {
         this.size = 0;
     }
 
+    public LinkedCollection(T[] array) {
+        this.size = 0;
+        for (T element : array) {
+            this.add(element);
+        }
+    }
+
     @Override
     public boolean add(T element) {
         if (this.rear == null) {
@@ -72,7 +79,7 @@ public class LinkedCollection<T> implements ICollection<T> {
 
     @Override
     public T get(T element) {
-        DLLNode<T> node = this.find(element);
+        DLLNode<T> node = this.linearSearch(element);
         if (node == null) {
             return null;
         }
@@ -81,7 +88,7 @@ public class LinkedCollection<T> implements ICollection<T> {
 
     @Override
     public boolean contains(T element) {
-        DLLNode<T> node = this.find(element);
+        DLLNode<T> node = this.linearSearch(element);
         return node != null;
     }
 
@@ -93,7 +100,7 @@ public class LinkedCollection<T> implements ICollection<T> {
         if (this.size == 1) {
             this.rear = null;
         } else {
-            DLLNode<T> node = this.find(element);
+            DLLNode<T> node = this.linearSearch(element);
             if (node == null) {
                 return false;
             }
@@ -193,7 +200,11 @@ public class LinkedCollection<T> implements ICollection<T> {
         return sb.toString();
     }
 
-    protected DLLNode<T> find(T element) {
+    protected DLLNode<T> head() {
+        return this.rear.getNext();
+    }
+
+    protected DLLNode<T> linearSearch(T element) {
         if (this.rear == null || element == null) {
             return null;
         }

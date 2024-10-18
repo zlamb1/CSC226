@@ -1,91 +1,112 @@
 package structures.chapter6;
 
-import structures.chapter2.LLNode;
-import structures.chapter5.ICollection;
+import structures.chapter2.DLLNode;
+import structures.chapter5.LinkedCollection;
 
 import java.util.Comparator;
-import java.util.Iterator;
 
-public class LinkedList<T> implements IList<T> {
-    private LLNode<T> head;
-    private int size;
-
+public class LinkedList<T> extends LinkedCollection<T> implements IList<T> {
     public LinkedList() {
-        this.head = null;
-        this.size = 0;
+        super();
+    }
+
+    public LinkedList(T[] array) {
+        super(array);
     }
 
     @Override
     public void add(int index, T element) {
-        checkBounds(index);
-        LLNode<T> newNode = new LLNode<>(element);
-        if (this.size == 1) {
-            this.head.setNext(newNode);
-        } else {
-            LLNode<T> cursor = this.head;
-            int indexCursor = 0;
-            while (cursor != null) {
-                if (indexCursor == index - 1) {
-                    newNode.setNext(cursor.getNext());
-                    cursor.setNext(newNode);
-                    break;
-                }
-                cursor = cursor.getNext();
+        this.boundsCheck(index);
+        DLLNode<T> newNode = new DLLNode<>(element);
+        DLLNode<T> cursor = super.head();
+        int current = 0;
+        do {
+            if (current == index) {
+                newNode.setPrev(cursor);
+                newNode.setNext(cursor.getNext());
+                cursor.setNext(newNode);
+                cursor.getNext().setPrev(newNode);
+                break;
             }
-        }
-        this.size++;
+            cursor = cursor.getNext();
+            current++;
+        } while (cursor != super.head());
+        super.size++;
     }
 
     @Override
     public T set(int index, T element) {
-        checkBounds(index);
+        this.boundsCheck(index);
+        DLLNode<T> cursor = super.head();
+        int current = 0;
         T oldElement = null;
-        LLNode<T> cursor = this.head;
-        int indexCursor = 0;
-        while (cursor != null) {
-            if (indexCursor == index) {
+        do {
+            if (index == current) {
                 oldElement = cursor.getElement();
                 cursor.setElement(element);
                 break;
             }
             cursor = cursor.getNext();
-            indexCursor++;
-        }
+            current++;
+        } while (cursor != super.head());
         return oldElement;
     }
 
     @Override
     public T get(int index) {
-        checkBounds(index);
-        LLNode<T> cursor = this.head;
-        int indexCursor = 0;
-        while (cursor != null) {
-            if (indexCursor == index) {
+        this.boundsCheck(index);
+        DLLNode<T> cursor = super.head();
+        int current = 0;
+        do {
+            if (current == index) {
                 return cursor.getElement();
             }
             cursor = cursor.getNext();
-            indexCursor++;
-        }
+            current++;
+        } while (cursor != super.head());
         return null;
     }
 
     @Override
     public int indexOf(T target) {
-        LLNode<T> cursor = this.head;
-        int indexCursor = 0;
-        while (cursor != null) {
+        DLLNode<T> cursor = super.head();
+        int current = 0;
+        do {
             if (cursor.getElement().equals(target)) {
-                return indexCursor;
+                return current;
             }
             cursor = cursor.getNext();
-            indexCursor++;
-        }
+            current++;
+        } while (cursor != super.head());
         return -1;
     }
 
     @Override
     public T remove(int index) {
-        return null;
+        this.boundsCheck(index);
+
+        if (super.size == 0) {
+            T element = super.rear.getElement();
+            super.rear = null;
+            super.size--;
+            return element;
+        }
+
+        DLLNode<T> cursor = super.head();
+        int current = 0;
+        T element = null;
+        do {
+            if (index == current) {
+                element = cursor.getElement();
+                cursor.getPrev().setNext(cursor.getNext());
+                cursor.getNext().setPrev(cursor.getPrev());
+                break;
+            }
+            cursor = cursor.getNext();
+            current++;
+        } while (cursor != super.head());
+        super.size--;
+        return element;
     }
 
     @Override
@@ -93,101 +114,9 @@ public class LinkedList<T> implements IList<T> {
 
     }
 
-    @Override
-    public boolean add(T element) {
-        if (this.size == 0) {
-            this.head = new LLNode<>(element);
-        } else {
-            LLNode<T> newNode = new LLNode<>(element);
-            LLNode<T> cursor = this.head;
-            while (cursor != null) {
-                if (cursor.getNext() == null) {
-                    cursor.setNext(newNode);
-                }
-                cursor = cursor.getNext();
-            }
-        }
-        this.size++;
-        return true;
-    }
-
-    @Override
-    public T get(T element) {
-        LLNode<T> cursor = this.head;
-        while (cursor != null) {
-            if (cursor.getElement().equals(element)) {
-                return cursor.getElement();
-            }
-            cursor = cursor.getNext();
-        }
-        return null;
-    }
-
-    @Override
-    public boolean contains(T element) {
-        return this.indexOf(element) >= 0;
-    }
-
-    @Override
-    public boolean remove(T element) {
-        int indexOf = this.indexOf(element);
-        if (indexOf >= 0) {
-            this.remove(indexOf);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return this.size == 0;
-    }
-
-    @Override
-    public boolean isFull() {
-        return false;
-    }
-
-    @Override
-    public int size() {
-        return this.size;
-    }
-
-    @Override
-    public T[] toArray() {
-        return null;
-    }
-
-    @Override
-    public void clear() {
-        this.head = null;
-        this.size = 0;
-    }
-
-    @Override
-    public boolean addAll(ICollection<T> other) {
-        return false;
-    }
-
-    @Override
-    public boolean retainAll(ICollection<T> other) {
-        return false;
-    }
-
-    @Override
-    public boolean removeAll(ICollection<T> other) {
-        return false;
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        return null;
-    }
-
-    protected void checkBounds(int index) {
-        if (index < 0 || index >= this.size) {
-            throw new ArrayOutOfBoundsException(index, this.size);
+    protected void boundsCheck(int index) {
+        if (index < 0 || index >= super.size) {
+            throw new ArrayOutOfBoundsException(index, super.size);
         }
     }
 }
