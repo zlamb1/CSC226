@@ -60,7 +60,7 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
 
     @Override
     public T get(int index) {
-        boundsCheck(index);
+        this.boundsCheck(index);
         return super.array[index];
     }
 
@@ -71,7 +71,7 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
 
     @Override
     public T remove(int index) {
-        boundsCheck(index);
+        this.boundsCheck(index);
         T element = super.array[index];
         for (int i = index + 1; i < super.size; i++) {
             super.array[i - 1] = super.array[i];
