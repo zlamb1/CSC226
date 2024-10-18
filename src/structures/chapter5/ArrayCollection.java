@@ -172,7 +172,7 @@ public class ArrayCollection<T> implements ICollection<T> {
         if (this.array.length < minCapacity) {
             int newCapacity = this.array.length;
             while (newCapacity < minCapacity) {
-                newCapacity = (int) (newCapacity * 2.0);
+                newCapacity = (int) Math.ceil(newCapacity * 2.0);
             }
             T[] newArray = (T[]) new Object[newCapacity];
             for (int i = 0; i < this.size; i++) {
