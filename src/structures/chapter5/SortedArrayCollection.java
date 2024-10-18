@@ -1,8 +1,6 @@
 package structures.chapter5;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Optional;
 
 public class SortedArrayCollection<T extends IComparable<T>> implements ICollection<T> {
     private static final int DEFAULT_CAPACITY = 16;
@@ -45,11 +43,7 @@ public class SortedArrayCollection<T extends IComparable<T>> implements ICollect
 
     @Override
     public boolean add(T element) {
-        Optional<Integer> opt = find(element);
-        if (opt.isEmpty()) {
-            return false;
-        }
-        int index = opt.get();
+        int index = binarySearch(element);
         if (index < 0) {
             index = -index - 1;
         }
@@ -67,7 +61,7 @@ public class SortedArrayCollection<T extends IComparable<T>> implements ICollect
         if (this.size == 0 || element == null) {
             return null;
         }
-        int index = find(element).get();
+        int index = binarySearch(element);
         if (index < 0) {
             return null;
         }
@@ -89,11 +83,10 @@ public class SortedArrayCollection<T extends IComparable<T>> implements ICollect
 
     @Override
     public boolean remove(T element) {
-        if (this.size == 0 || element == null) {
+        if (this.size == 0) {
             return false;
         }
-        // null-check ensures optional is present
-        int index = find(element).get();
+        int index = binarySearch(element);
         if (index < 0) {
             return false;
         }
@@ -181,23 +174,23 @@ public class SortedArrayCollection<T extends IComparable<T>> implements ICollect
         return sb.toString();
     }
 
-    protected Optional<Integer> find(T element) {
+    protected int binarySearch(T element) {
         if (element == null) {
-            return Optional.empty();
+            throw new IllegalArgumentException();
         }
-        int left = 0, right = this.size - 1, mid = 0;
-        while (left <= right) {
-            mid = left + (right - left) / 2;
+        int low = 0, high = this.size - 1, mid = 0;
+        while (low <= high) {
+            mid = low + (high - low) / 2;
             int cmp = element.compareTo(this.array[mid]);
             if (cmp > 0) {
-                left = mid + 1;
+                low = mid + 1;
             } else if (cmp < 0) {
-                right = mid - 1;
+                high = mid - 1;
             } else {
-                return Optional.of(mid);
+                return mid;
             }
         }
-        return Optional.of(-(left + 1));
+        return -(low + 1);
     }
 
     @SuppressWarnings("unchecked")

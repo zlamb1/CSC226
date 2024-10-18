@@ -2,13 +2,12 @@ package structures.chapter6;
 
 import structures.chapter5.ICollection;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 public class ArrayList<T> implements IList<T> {
     private static final int DEFAULT_CAPACITY = 16;
-    private T[] array;
-    private int size;
+    protected T[] array;
+    protected int size;
 
     private class ArrayIterator implements Iterator<T> {
         private int index;
