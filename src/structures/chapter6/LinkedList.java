@@ -17,15 +17,14 @@ public class LinkedList<T> extends LinkedCollection<T> implements IList<T> {
     @Override
     public void add(int index, T element) {
         this.boundsCheck(index);
-        DLLNode<T> newNode = new DLLNode<>(element);
-        DLLNode<T> cursor = super.head();
+        DLLNode<T> cursor = super.head(), newNode = new DLLNode<>(element);
         int current = 0;
         do {
             if (current == index) {
-                newNode.setPrev(cursor);
-                newNode.setNext(cursor.getNext());
-                cursor.setNext(newNode);
-                cursor.getNext().setPrev(newNode);
+                newNode.setPrev(cursor.getPrev());
+                newNode.setNext(cursor);
+                cursor.getPrev().setNext(newNode);
+                cursor.setPrev(newNode);
                 break;
             }
             cursor = cursor.getNext();
@@ -37,11 +36,11 @@ public class LinkedList<T> extends LinkedCollection<T> implements IList<T> {
     @Override
     public T set(int index, T element) {
         this.boundsCheck(index);
+        T oldElement = null;
         DLLNode<T> cursor = super.head();
         int current = 0;
-        T oldElement = null;
         do {
-            if (index == current) {
+            if (current == index) {
                 oldElement = cursor.getElement();
                 cursor.setElement(element);
                 break;
@@ -85,7 +84,7 @@ public class LinkedList<T> extends LinkedCollection<T> implements IList<T> {
     public T remove(int index) {
         this.boundsCheck(index);
 
-        if (super.size == 0) {
+        if (super.size == 1) {
             T element = super.rear.getElement();
             super.rear = null;
             super.size--;
@@ -96,7 +95,7 @@ public class LinkedList<T> extends LinkedCollection<T> implements IList<T> {
         int current = 0;
         T element = null;
         do {
-            if (index == current) {
+            if (current == index) {
                 element = cursor.getElement();
                 cursor.getPrev().setNext(cursor.getNext());
                 cursor.getNext().setPrev(cursor.getPrev());
@@ -105,18 +104,23 @@ public class LinkedList<T> extends LinkedCollection<T> implements IList<T> {
             cursor = cursor.getNext();
             current++;
         } while (cursor != super.head());
+
         super.size--;
         return element;
     }
 
     @Override
-    public void sort(Comparator<T> comp) {
-
+    public void sort(Comparator<T> comparator) {
+        SortedLinkedList<T> sortedList = new SortedLinkedList<T>(comparator);
+        for (T element : this) {
+            sortedList.add(element);
+        }
+        this.rear = sortedList.rear;
     }
 
     protected void boundsCheck(int index) {
         if (index < 0 || index >= super.size) {
-            throw new ArrayOutOfBoundsException(index, super.size);
+            throw new IndexOutOfBoundsException(index);
         }
     }
 }
