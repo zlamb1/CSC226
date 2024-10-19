@@ -2,6 +2,7 @@ package structures.chapter6;
 
 import structures.chapter2.DLLNode;
 import structures.chapter5.LinkedCollection;
+import structures.chapter5.SortUtility;
 
 import java.util.Comparator;
 
@@ -111,11 +112,7 @@ public class LinkedList<T> extends LinkedCollection<T> implements IList<T> {
 
     @Override
     public void sort(Comparator<T> comparator) {
-        SortedLinkedList<T> sortedList = new SortedLinkedList<T>(comparator);
-        for (T element : this) {
-            sortedList.add(element);
-        }
-        this.rear = sortedList.rear;
+        rear = SortUtility.sortDoublyLinkedList(rear, true, comparator).getNext();
     }
 
     protected void boundsCheck(int index) {

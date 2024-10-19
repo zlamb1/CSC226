@@ -14,24 +14,14 @@ public class SortedArrayList<T> extends SortedArrayCollection<T> implements ILis
     }
 
     @Override
-    public void add(int index, T element) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public T set(int index, T element) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public T get(int index) {
         boundsCheck(index);
-        return super.array[index];
+        return array[index];
     }
 
     @Override
     public int indexOf(T target) {
-        int index = super.binarySearch(target);
+        int index = binarySearch(target);
         if (index < 0) {
             return -1;
         }
@@ -40,23 +30,20 @@ public class SortedArrayList<T> extends SortedArrayCollection<T> implements ILis
 
     @Override
     public T remove(int index) {
-        this.boundsCheck(index);
-        T element = super.array[index];
-        for (int i = index + 1; i < super.size; i++) {
-            super.array[i - 1] = super.array[i];
+        boundsCheck(index);
+        T element = array[index];
+
+        for (int i = index + 1; i < size; i++) {
+            array[i - 1] = array[i];
         }
-        super.size--;
+
+        size--;
         return element;
     }
 
-    @Override
-    public void sort(Comparator<T> comparator) {
-        throw new UnsupportedOperationException();
-    }
-
     protected void boundsCheck(int index) {
-        if (index < 0 || index >= super.size) {
-            throw new ArrayOutOfBoundsException(index, super.size);
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException(index);
         }
     }
 }

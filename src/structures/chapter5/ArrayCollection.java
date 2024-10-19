@@ -2,32 +2,27 @@ package structures.chapter5;
 
 import java.util.Iterator;
 
-public class ArrayCollection<T> implements ICollection<T> {
+public class ArrayCollection<T> extends AbstractCollection<T> implements IBoundedCollection<T> {
     protected static final int DEFAULT_CAPACITY = 16;
     protected T[] array;
-    protected int size;
 
     private final class ArrayIterator implements Iterator<T> {
         private int index = 0;
 
-        public ArrayIterator() {
-
-        }
-
         @Override
         public boolean hasNext() {
-            return this.index < size;
+            return index < size;
         }
 
         @Override
         public T next() {
-            return array[this.index++];
+            return array[index++];
         }
 
         @Override
         public void remove() {
             size--;
-            array[--this.index] = array[size];
+            array[--index] = array[size];
         }
     }
 
@@ -48,96 +43,26 @@ public class ArrayCollection<T> implements ICollection<T> {
             throw new IllegalArgumentException();
         }
 
-        this.ensureCapacity(this.size + 1);
-        this.array[this.size] = element;
-        this.size++;
+        ensureCapacity(size + 1);
+        array[size] = element;
+        size++;
         return true;
-    }
-
-    @Override
-    public T get(T element) {
-        int index = this.linearSearch(element);
-        if (index == -1) {
-            return null;
-        }
-        return this.array[index];
-    }
-
-    @Override
-    public boolean contains(T element) {
-        return this.get(element) != null;
     }
 
     @Override
     public boolean remove(T element) {
-        int index = this.linearSearch(element);
+        int index = linearSearch(element);
         if (index < 0) {
             return false;
         }
-        this.size--;
-        this.array[index] = this.array[this.size];
+        size--;
+        array[index] = array[size];
         return true;
     }
 
     @Override
-    public boolean isEmpty() {
-        return this.size == 0;
-    }
-
-    @Override
     public boolean isFull() {
-        return this.size == this.array.length;
-    }
-
-    @Override
-    public int size() {
-        return this.size;
-    }
-
-    @Override
-    public T[] toArray() {
-        return this.array.clone();
-    }
-
-    @Override
-    public void clear() {
-        this.size = 0;
-    }
-
-    @Override
-    public boolean addAll(ICollection<T> other) {
-        boolean modified = false;
-        for (T el : other) {
-            if (this.add(el)) {
-                modified = true;
-            }
-        }
-        return modified;
-    }
-
-    @Override
-    public boolean retainAll(ICollection<T> other) {
-        boolean modified = false;
-        Iterator<T> iter = this.iterator();
-        while (iter.hasNext()) {
-            T el = iter.next();
-            if (!other.contains(el)) {
-                iter.remove();
-                modified = true;
-            }
-        }
-        return modified;
-    }
-
-    @Override
-    public boolean removeAll(ICollection<T> other) {
-        boolean modified = false;
-        for (T el : other) {
-            if (this.remove(el)) {
-                modified = true;
-            }
-        }
-        return modified;
+        return size == array.length;
     }
 
     @Override
@@ -149,9 +74,9 @@ public class ArrayCollection<T> implements ICollection<T> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        for (int i = 0; i < this.size; i++) {
-            sb.append(this.array[i]);
-            if (i != this.size - 1) {
+        for (int i = 0; i < size; i++) {
+            sb.append(array[i]);
+            if (i != size - 1) {
                 sb.append(", ");
             }
         }
@@ -169,30 +94,20 @@ public class ArrayCollection<T> implements ICollection<T> {
 
     @SuppressWarnings("unchecked")
     protected boolean ensureCapacity(int minCapacity) {
-        if (this.array.length < minCapacity) {
-            int newCapacity = this.array.length;
+        if (array.length < minCapacity) {
+            int newCapacity = array.length;
             while (newCapacity < minCapacity) {
                 newCapacity = (int) Math.ceil(newCapacity * 2.0);
             }
             T[] newArray = (T[]) new Object[newCapacity];
-            for (int i = 0; i < this.size; i++) {
-                newArray[i] = this.array[i];
-            }
-            this.array = newArray;
+            if (size >= 0) System.arraycopy(array, 0, newArray, 0, size);
+            array = newArray;
             return true;
         }
         return false;
     }
 
     protected int linearSearch(T element) {
-        if (element == null) {
-            throw new IllegalArgumentException();
-        }
-        for (int i = 0; i < this.size; i++) {
-            if (this.array[i].equals(element)) {
-                return i;
-            }
-        }
-        return -1;
+        return SearchUtility.linearSearch(array, size, element);
     }
 }

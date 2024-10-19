@@ -1,6 +1,7 @@
 package structures.chapter6;
 
 import structures.chapter5.ArrayCollection;
+import structures.chapter5.SortUtility;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -82,7 +83,7 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
 
     @Override
     public void sort(Comparator<T> comparator) {
-        Arrays.sort(super.array, comparator);
+        SortUtility.mergeSort(array, comparator);
     }
 
     @Override
@@ -92,7 +93,7 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
 
     protected void boundsCheck(int index) {
         if (index < 0 || index >= super.size) {
-            throw new ArrayOutOfBoundsException(index, super.size);
+            throw new IndexOutOfBoundsException(index);
         }
     }
 }

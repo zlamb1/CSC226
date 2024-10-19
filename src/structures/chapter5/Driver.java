@@ -1,5 +1,7 @@
 package structures.chapter5;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class Driver {
@@ -114,7 +116,26 @@ public class Driver {
         System.out.println(coll);
     }
 
+    public static void testLinkedSet() {
+        LinkedSet<Integer> set = new LinkedSet<>();
+        set.add(1);
+        set.add(2);
+        set.add(3);
+        set.add(1);
+        set.add(2);
+        set.add(3);
+        System.out.println(set);
+    }
+
+    public static void testMergeSort() {
+        Integer[] array = new Integer[] {
+                5, 8, 3, 2, 10, 9, 1, 7, 6, 4
+        };
+        SortUtility.mergeSort(array, (i1, i2) -> i1 - i2);
+        System.out.println(Arrays.toString(array));
+    }
+
     public static void main(String[] args) {
-        testLinkedCollection();
+        testMergeSort();
     }
 }
