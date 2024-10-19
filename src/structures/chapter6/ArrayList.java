@@ -25,7 +25,7 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
 
         @Override
         public boolean hasNext() {
-            return this.index < size;
+            return index < size;
         }
 
         @Override
@@ -42,7 +42,7 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
     @Override
     public void add(int index, T element) {
         boundsCheck(index);
-        ensureCapacity(super.size + 1);
+        ensureCapacity(size + 1);
         for (int i = size - 1; i >= index; i--) {
             array[i + 1] = array[i];
         }
