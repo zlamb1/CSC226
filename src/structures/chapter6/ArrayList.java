@@ -3,7 +3,6 @@ package structures.chapter6;
 import structures.chapter5.ArrayCollection;
 import structures.chapter5.SortUtility;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 
@@ -18,7 +17,7 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
 
     private class ArrayListIterator implements Iterator<T> {
         private int index = 0;
-        private ArrayList<T> list;
+        private final ArrayList<T> list;
 
         public ArrayListIterator(ArrayList<T> list) {
             this.list = list;
@@ -36,48 +35,48 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
 
         @Override
         public void remove() {
-             this.list.remove(--this.index);
+             list.remove(--index);
         }
     }
 
     @Override
     public void add(int index, T element) {
-        this.boundsCheck(index);
-        super.ensureCapacity(super.size + 1);
-        for (int i = super.size - 1; i >= index; i--) {
-            super.array[i + 1] = super.array[i];
+        boundsCheck(index);
+        ensureCapacity(super.size + 1);
+        for (int i = size - 1; i >= index; i--) {
+            array[i + 1] = array[i];
         }
-        super.array[index] = element;
-        super.size++;
+        array[index] = element;
+        size++;
     }
 
     @Override
     public T set(int index, T element) {
-        this.boundsCheck(index);
-        T oldElement = super.array[index];
-        super.array[index] = element;
+        boundsCheck(index);
+        T oldElement = array[index];
+        array[index] = element;
         return oldElement;
     }
 
     @Override
     public T get(int index) {
-        this.boundsCheck(index);
-        return super.array[index];
+        boundsCheck(index);
+        return array[index];
     }
 
     @Override
     public int indexOf(T target) {
-        return super.linearSearch(target);
+        return linearSearch(target);
     }
 
     @Override
     public T remove(int index) {
-        this.boundsCheck(index);
-        T element = super.array[index];
-        for (int i = index + 1; i < super.size; i++) {
-            super.array[i - 1] = super.array[i];
+        boundsCheck(index);
+        T element = array[index];
+        for (int i = index + 1; i < size; i++) {
+            array[i - 1] = array[i];
         }
-        super.size--;
+        size--;
         return element;
     }
 
@@ -92,7 +91,7 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
     }
 
     protected void boundsCheck(int index) {
-        if (index < 0 || index >= super.size) {
+        if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(index);
         }
     }

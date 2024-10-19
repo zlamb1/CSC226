@@ -5,15 +5,15 @@ import structures.chapter5.ICollection;
 import java.util.Comparator;
 
 public interface IList<T> extends ICollection<T> {
-    default void add(int index, T element) throws UnsupportedOperationException {
+    default void add(int index, T element) throws IllegalArgumentException, UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
-    default T set(int index, T element) throws UnsupportedOperationException {
+    default T set(int index, T element) throws IllegalArgumentException, UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
-    default void sort(Comparator<T> comp) throws UnsupportedOperationException {
+    default void sort(Comparator<T> comp) throws IllegalArgumentException, UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
