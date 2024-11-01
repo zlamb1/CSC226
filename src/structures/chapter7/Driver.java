@@ -13,13 +13,16 @@ public class Driver {
         bst.add(200);
         bst.add(150);
         bst.add(300);
+        bst.add(5);
 
-        System.out.println(bst.remove(100));
-
-        Iterator<Integer> iter = bst.getIterator(IBinarySearchTree.Traversal.Inorder);
-        while (iter.hasNext()) {
-            System.out.println(iter.next());
-        }
+        System.out.println("min: " + bst.min());
+        System.out.println("min2: " + bst.min2());
+        System.out.println("leafCount(false): " + bst.leafCount(false));
+        System.out.println("leafCount(true): " + bst.leafCount(true));
+        System.out.println("oneChild(false): " + bst.oneChild(false));
+        System.out.println("oneChild(true): " + bst.oneChild(true));
+        System.out.println("height(false): " + bst.height(false));
+        System.out.println("height(true): " + bst.height(true));
     }
 
 }

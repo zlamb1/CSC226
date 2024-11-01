@@ -49,16 +49,21 @@ public class DLLStack<T> implements IStack<T> {
     }
 
     @Override
-    public void pop() {
+    public T pop() {
         if (this.head == null) {
             throw new StackUnderflowException();
         }
+
+        T element = this.head.getElement();
         this.head = this.head.getNext();
+
         if (this.head == null) {
             this.tail = null;
         } else {
             this.head.setPrev(null);
         }
+
+        return element;
     }
 
     @Override

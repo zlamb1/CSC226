@@ -51,11 +51,12 @@ public class ListStack<T> implements IStack<T> {
     }
 
     @Override
-    public void pop() {
+    public T pop() {
         if (this.index < 0) {
             throw new StackUnderflowException();
         }
-        this.index--;
+
+        return this.list.get(this.index--);
     }
 
     @Override

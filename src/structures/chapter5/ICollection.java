@@ -22,19 +22,8 @@ public interface ICollection<T> extends Iterable<T> {
     }
 
     default boolean contains(T element) throws IllegalArgumentException {
-        if (element == null) {
-            throw new IllegalArgumentException();
-        }
-
-        for (T el : this) {
-            if (el.equals(element)) {
-                return true;
-            }
-        }
-
-        return false;
+        return get(element) != null;
     }
-
 
     default boolean remove(T element) throws IllegalArgumentException, UnsupportedOperationException {
         throw new UnsupportedOperationException();
