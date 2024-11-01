@@ -40,7 +40,10 @@ public class Movie implements IComparable<Movie> {
         if (other == null) return false;
 
         if (other instanceof Movie movie) {
-            return title.equals(movie.getTitle()) && director.equals(movie.getDirector()) && genre.equals(movie.getGenre()) && year == movie.getYear();
+            return title.equals(movie.getTitle()) &&
+                    director.equals(movie.getDirector()) &&
+                    genre.equals(movie.getGenre()) &&
+                    year == movie.getYear();
         }
 
         return false;

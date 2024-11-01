@@ -207,12 +207,11 @@ public class BinarySearchTree<T> implements IBinarySearchTree<T> {
 
         ArrayList<T> list = new ArrayList<>();
         ArrayStack<BinaryNode<T>> nodes = new ArrayStack<>();
-        // we are not able to perform a binary search since the match function might not evaluate the same as the comparator that is used for insertion
+        // we are not able to perform a binary search since the match function isn't the comparator
         inOrderTraversal(root, nodes);
 
         while (!nodes.isEmpty()) {
-            BinaryNode<T> node = nodes.top();
-            nodes.pop();
+            BinaryNode<T> node = nodes.pop();
             if (match.matches(node.getValue())) {
                 list.add(node.getValue());
             }
