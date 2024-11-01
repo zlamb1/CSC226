@@ -8,6 +8,7 @@ import week8.IMatch;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Stack;
 
 public class BinarySearchTree<T> implements IBinarySearchTree<T> {
     private final Comparator<T> comparator;
@@ -225,7 +226,7 @@ public class BinarySearchTree<T> implements IBinarySearchTree<T> {
             return recursiveLeafCount(root);
         } else {
             ArrayStack<BinaryNode<T>> nodes = new ArrayStack<>();
-            inOrderTraversal(root, nodes);
+            iterativeTraversal(root, nodes);
             int count = 0;
             while (!nodes.isEmpty()) {
                 BinaryNode<T> node = nodes.pop();
@@ -243,7 +244,7 @@ public class BinarySearchTree<T> implements IBinarySearchTree<T> {
             return recursiveOneChild(root);
         } else {
             ArrayStack<BinaryNode<T>> nodes = new ArrayStack<>();
-            inOrderTraversal(root, nodes);
+            iterativeTraversal(root, nodes);
             int count = 0;
             while (!nodes.isEmpty()) {
                 BinaryNode<T> node = nodes.pop();
@@ -329,6 +330,24 @@ public class BinarySearchTree<T> implements IBinarySearchTree<T> {
             nodes.push(root);
             postOrderTraversal(root.getRight(), nodes);
             postOrderTraversal(root.getLeft(), nodes);
+        }
+    }
+
+    protected void iterativeTraversal(BinaryNode<T> root, IStack<BinaryNode<T>> nodes) {
+        if (root == null) return;
+
+        IStack<BinaryNode<T>> stk = new ArrayStack<>();
+        stk.push(root);
+
+        while (!stk.isEmpty()) {
+            BinaryNode<T> node = stk.pop();
+            nodes.push(node);
+            if (node.getLeft() != null) {
+                stk.push(node.getLeft());
+            }
+            if (node.getRight() != null) {
+                stk.push(node.getRight());
+            }
         }
     }
 
