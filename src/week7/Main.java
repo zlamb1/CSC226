@@ -77,16 +77,22 @@ public class Main {
         System.out.println("noX(abc): " + noX("abc"));
         System.out.println("noX(xx): " + noX("xx"));
         System.out.println("------------------");
-        int[] array2 = { 1, 2, 3, 4, 5, 6 };
+        int[] array2 = { 1, 2, 3, 4, 5, 6 }, array3 = { 3, 5, 4, 2, 1 }, array4 = { 1 }, array5 = {};
         reverse(array2);
-        System.out.println(Arrays.toString(array2));
+        System.out.println("reverse [1, 2, 3, 4, 5, 6]: " + Arrays.toString(array2));
+        reverse(array3);
+        System.out.println("reverse [3, 5, 4, 2, 1]: " + Arrays.toString(array3));
+        reverse(array4);
+        System.out.println("reverse [1]: " + Arrays.toString(array4));
+        reverse(array5);
+        System.out.println("reverse []: " + Arrays.toString(array5));
         System.out.println("------------------");
         diagonalPrint("hello", false);
         diagonalPrint("hello", true);
         System.out.println("------------------");
         System.out.println("countHanoiMoves(3): " + countHanoiMoves(3));
         System.out.println("countHanoiMoves(8): " + countHanoiMoves(8));
-        System.out.println("countHanoiMoves(8): " + countHanoiMoves(12));
+        System.out.println("countHanoiMoves(12): " + countHanoiMoves(12));
     }
 
 }
