@@ -30,6 +30,8 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
 
         if (shouldResize()) {
             resize(getMinCapacity(size + 1));
+        } else if (size == table.size()) {
+            throw new MapOverflowException();
         }
         
         int index = Math.abs(key.hashCode()) % table.size(), cursor = index;
