@@ -1,5 +1,6 @@
 package structures.chapter5;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 public class ArrayCollection<T> extends AbstractCollection<T> implements IBoundedCollection<T> {
@@ -26,15 +27,28 @@ public class ArrayCollection<T> extends AbstractCollection<T> implements IBounde
         }
     }
 
-    @SuppressWarnings("unchecked")
     public ArrayCollection() {
-        this.array = (T[]) new Object[DEFAULT_CAPACITY];
-        this.size = 0;
+        this(DEFAULT_CAPACITY);
     }
 
     public ArrayCollection(T[] array) {
         this.array = array;
         this.size = array.length;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ArrayCollection(int capacity) {
+        this.array = (T[]) new Object[capacity];
+        this.size = 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ArrayCollection(T defaultValue, int capacity) {
+        this.array = (T[]) new Object[capacity];
+        for (int i = 0; i < capacity; i++) {
+            array[i] = defaultValue;
+        }
+        size = capacity;
     }
 
     @Override
@@ -93,7 +107,7 @@ public class ArrayCollection<T> extends AbstractCollection<T> implements IBounde
     }
 
     @SuppressWarnings("unchecked")
-    protected boolean ensureCapacity(int minCapacity) {
+    public boolean ensureCapacity(int minCapacity) {
         if (array.length < minCapacity) {
             int newCapacity = array.length;
             while (newCapacity < minCapacity) {

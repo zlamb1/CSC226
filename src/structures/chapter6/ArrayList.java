@@ -15,6 +15,14 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
         super(array);
     }
 
+    public ArrayList(int capacity) {
+        super(capacity);
+    }
+
+    public ArrayList(T defaultValue, int capacity) {
+        super(defaultValue, capacity);
+    }
+
     private class ArrayListIterator implements Iterator<T> {
         private int index = 0;
         private final ArrayList<T> list;
@@ -88,6 +96,10 @@ public class ArrayList<T> extends ArrayCollection<T> implements IList<T> {
     @Override
     public Iterator<T> iterator() {
         return new ArrayListIterator(this);
+    }
+
+    public int capacity() {
+        return array.length;
     }
 
     protected void boundsCheck(int index) {
