@@ -2,24 +2,34 @@ package structures.chapter8;
 
 import structures.chapter6.ArrayList;
 
-import javax.sound.midi.SysexMessage;
 import java.util.Iterator;
 
 /**
- * A hash map implementation that internally uses an ArrayList and linear probing.
+ * A hash map implementation that internally uses an ArrayList and open addressing.
  * @param <K> Key Type
  * @param <V> Value Type
  */
 
 public class HashMap<K, V> implements IBoundedMap<K, V> {
+    public enum ProbingStrategy {
+        LINEAR,
+        QUADRATIC
+    }
+
     protected static int DEFAULT_CAPACITY = 16;
 
     protected ArrayList<MapEntry<K, V>> table;
     protected int size = 0;
-    protected LoadFactor loadFactor = new LoadFactor(0.25, 0.75);
+    protected LoadFactor loadFactor = new LoadFactor(0.1, 1.0, false, true);
+    protected ProbingStrategy probingStrategy = ProbingStrategy.LINEAR;
 
     public HashMap() {
         table = new ArrayList<>(null, DEFAULT_CAPACITY);
+    }
+
+    public HashMap(ProbingStrategy probingStrategy) {
+        this();
+        this.probingStrategy = probingStrategy;
     }
 
     @Override
@@ -28,21 +38,20 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
             throw new IllegalArgumentException("Key cannot be null.");
         }
 
-        if (shouldResize()) {
-            resize(getMinCapacity(size + 1));
-        } else if (size == table.size()) {
+        if (!resize() && size == table.size()) {
             throw new MapOverflowException();
         }
         
-        int index = Math.abs(key.hashCode()) % table.size(), cursor = index;
-        MapEntry<K, V> entry = table.get(cursor);
+        int index = Math.abs(key.hashCode()) % table.size(), cursor = 0;
+        MapEntry<K, V> entry = table.get(index);
         while (entry != null && !entry.isTombstone() && !entry.getKey().equals(key)) {
-            cursor = ++cursor % table.size();
-            entry = table.get(cursor);
+            // TODO: solve infinite loops with quadratic probing
+            cursor++;
+            entry = table.get(getProbeIndex(index, cursor));
         }
 
-        MapEntry<K, V> oldEntry = table.get(cursor);
-        table.set(cursor, new MapEntry<>(key, value));
+        MapEntry<K, V> oldEntry = table.get(getProbeIndex(index, cursor));
+        table.set(getProbeIndex(index, cursor), new MapEntry<>(key, value));
 
         if (oldEntry == null || oldEntry.isTombstone()) {
             size++;
@@ -59,16 +68,16 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
             throw new IllegalArgumentException("Key cannot be null.");
         }
 
-        int index = Math.abs(key.hashCode()) % table.size(), cursor = index;
+        int index = Math.abs(key.hashCode()) % table.size(), cursor = 0;
         MapEntry<K, V> entry = table.get(index);
         while (entry != null) {
             if (!entry.isTombstone() && entry.getKey().equals(key)) {
                 return entry.getValue();
             }
 
-            cursor = ++cursor % table.size();
-            if (cursor == index) break;
-            entry = table.get(cursor);
+            cursor++;
+            if (cursor == table.size()) break;
+            entry = table.get(getProbeIndex(index, cursor));
         }
 
         return null;
@@ -80,26 +89,25 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
             throw new IllegalArgumentException("Key cannot be null.");
         }
 
-        int index = Math.abs(key.hashCode()) % table.size(), cursor = index;
-        MapEntry<K, V> entry = table.get(cursor);
+        int index = Math.abs(key.hashCode()) % table.size(), cursor = 0;
+        MapEntry<K, V> entry = table.get(index);
         while (entry != null) {
             if (!entry.isTombstone() && entry.getKey().equals(key)) {
-                int next = ++cursor % table.size();
+                int next = getProbeIndex(index, cursor + 1);
                 if (table.get(next) == null) {
-                    table.set(cursor, null);
+                    table.set(getProbeIndex(index, cursor), null);
                 } else {
                     entry.setTombstone(true);
                 }
 
-                if (shouldResize()) {
-                    resize(getMinCapacity(size - 1));
-                }
-
                 size--;
+                resize();
+
                 return entry.getValue();
             }
-            cursor = ++cursor % table.size();
-            entry = table.get(cursor);
+
+            cursor++;
+            entry = table.get(getProbeIndex(index, cursor));
         }
 
         return null;
@@ -130,53 +138,9 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
         return table.iterator();
     }
 
-    protected void resize(int newCapacity) {
-        if (size > newCapacity) {
-            throw new IllegalArgumentException("Cannot resize HashMap to capacity smaller than current size.");
-        }
-
-        ArrayList<MapEntry<K, V>> newTable = new ArrayList<>(null, newCapacity);
-
-        for (MapEntry<K, V> entry : table) {
-            if (entry != null && !entry.isTombstone()) {
-                // rehash
-                int index = Math.abs(entry.getKey().hashCode()) % newCapacity, cursor = index;
-                while (newTable.get(cursor) != null) {
-                    cursor = ++cursor % newCapacity;
-                }
-                newTable.set(cursor, entry);
-            }
-        }
-
-        table = newTable;
-    }
-
-    protected int getMinCapacity(int size) {
-        int capacity = table.size();
-
-        if (size > capacity) {
-            while (capacity < size) {
-                capacity *= 2;
-            }
-        } else {
-            while ((capacity / 2) > size) {
-                capacity /= 2;
-            }
-        }
-
-        return Math.max(capacity, 1);
-    }
-
-    protected boolean shouldResize() {
-        double load = (double) size / table.size();
-        return (loadFactor.shouldUseLowerBound() && load <= loadFactor.getLowerBound()) || (loadFactor.shouldUseUpperBound() && load >= loadFactor.getUpperBound());
-    }
-
     public void setLoadFactor(LoadFactor loadFactor) {
         this.loadFactor = loadFactor;
-        if (shouldResize()) {
-            resize(getMinCapacity(size));
-        }
+        resize();
     }
 
     @Override
@@ -191,5 +155,72 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
             }
         }
         return stringBuilder.append("}").toString();
+    }
+
+    protected int getProbeIndex(int index, int cursor) {
+        return switch (probingStrategy) {
+            case LINEAR -> (index + cursor) % table.size();
+            case QUADRATIC -> (index + (cursor * cursor)) % table.size();
+        };
+    }
+
+    public boolean resize(int capacity) {
+        if (size > capacity) {
+            throw new IllegalArgumentException("Cannot resize HashMap to capacity smaller than current size.");
+        }
+
+        ArrayList<MapEntry<K, V>> newTable = new ArrayList<>(null, capacity);
+
+        for (MapEntry<K, V> entry : table) {
+            if (entry != null && !entry.isTombstone()) {
+                // rehash
+                int index = Math.abs(entry.getKey().hashCode()) % capacity, cursor = 0;
+                MapEntry<K, V> _entry = table.get(getProbeIndex(index, cursor));
+                while (_entry != null) {
+                    cursor++;
+                    _entry = newTable.get(getProbeIndex(index, cursor));
+                }
+                newTable.set(getProbeIndex(index, cursor), entry);
+            }
+        }
+
+        table = newTable;
+        return true;
+    }
+
+    protected boolean resize() {
+        if (shouldGrow()) {
+            return resize(getLargerCapacity(size));
+        } else if (shouldShrink()) {
+            return resize(getSmallerCapacity(size));
+        } else {
+            return false;
+        }
+    }
+
+    protected int getLargerCapacity(int size) {
+        int capacity = table.size();
+        while (((double) size / capacity) >= loadFactor.getUpperBound()) {
+            capacity *= 2;
+        }
+        return capacity;
+    }
+
+    protected int getSmallerCapacity(int size) {
+        int capacity = table.size();
+        while (((double) size / capacity) <= loadFactor.getLowerBound()) {
+            capacity /= 2;
+        }
+        return capacity;
+    }
+
+    protected boolean shouldGrow() {
+        double load = (double) size / table.size();
+        return loadFactor.shouldUseUpperBound() && load >= loadFactor.getUpperBound();
+    }
+
+    protected boolean shouldShrink() {
+        double load = (double) size / table.size();
+        return loadFactor.shouldUseLowerBound() && load <= loadFactor.getLowerBound();
     }
 }
