@@ -1,6 +1,5 @@
 package structures.chapter9;
 
-import java.util.Arrays;
 import java.util.Comparator;
 
 public class HeapPriorityQueue<T> implements IBoundedPriorityQueue<T> {
