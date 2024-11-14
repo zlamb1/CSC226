@@ -8,7 +8,6 @@ import week8.IMatch;
 
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Stack;
 
 public class BinarySearchTree<T> implements IBinarySearchTree<T> {
     private final Comparator<T> comparator;
