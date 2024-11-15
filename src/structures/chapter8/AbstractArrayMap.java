@@ -2,6 +2,7 @@ package structures.chapter8;
 
 import structures.chapter6.ArrayList;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.Iterator;
 
 public abstract class AbstractArrayMap<K, V, E extends IMapEntry<K, V>> extends AbstractMap<K, V> implements IBoundedMap<K, V> {
@@ -73,6 +74,31 @@ public abstract class AbstractArrayMap<K, V, E extends IMapEntry<K, V>> extends 
                 put(entry);
             }
         }
+    }
+
+    @Override
+    public double getAverageBucketSize() {
+        int totalBuckets = table.size() - getEmptyBuckets(), totalBucketLength = 0;
+        if (totalBuckets == 0) {
+            return 0;
+        }
+
+        for (E entry : table) {
+            if (entry != null) {
+                totalBucketLength += entry.getBucketLength();
+            }
+        }
+
+        return ((double) totalBucketLength) / totalBuckets;
+    }
+
+    @Override
+    public int getEmptyBuckets() {
+        int count = 0;
+        for (E entry : table) {
+            if (entry == null) count++;
+        }
+        return count;
     }
 
     protected void put(E entry) {

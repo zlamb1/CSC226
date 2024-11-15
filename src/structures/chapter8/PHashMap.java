@@ -2,6 +2,8 @@ package structures.chapter8;
 
 import structures.chapter6.ArrayList;
 
+import javax.naming.OperationNotSupportedException;
+
 /**
  * A hash map implementation that internally uses an ArrayList and open addressing.
  * @param <K> Key Type

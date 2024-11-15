@@ -2,6 +2,8 @@ package structures.chapter8;
 
 import structures.chapter6.ArrayList;
 
+import javax.naming.OperationNotSupportedException;
+
 /**
  * A hash map implementation that internally uses an ArrayList and separate chaining.
  * @param <K> Key Type
@@ -26,6 +28,17 @@ public class CHashMap<K, V> extends AbstractArrayMap<K, V, CHashMap.CMapEntry<K,
 
         public void setNext(CMapEntry<K, V> next) {
             this.next = next;
+        }
+
+        @Override
+        public int getBucketLength() {
+            int count = 0;
+            CMapEntry<K, V> cursor = this;
+            while (cursor != null) {
+                count++;
+                cursor = cursor.getNext();
+            }
+            return count;
         }
 
         @Override

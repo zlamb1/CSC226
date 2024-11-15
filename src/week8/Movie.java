@@ -3,8 +3,8 @@ package week8;
 import structures.chapter5.IComparable;
 
 public class Movie implements IComparable<Movie> {
-    private String title, director, genre;
-    private int year;
+    protected String title, director, genre;
+    protected int year;
 
     public Movie(String title, String director, String genre, int year) {
         this.title = title;

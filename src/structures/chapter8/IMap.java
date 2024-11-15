@@ -1,5 +1,7 @@
 package structures.chapter8;
 
+import javax.naming.OperationNotSupportedException;
+
 public interface IMap<K, V> extends Iterable<IMapEntry<K, V>> {
     V put(K key, V value);
     V get(K key);
@@ -7,5 +9,17 @@ public interface IMap<K, V> extends Iterable<IMapEntry<K, V>> {
     boolean contains(K key);
     boolean isEmpty();
     int size();
-    void resize(int newCapacity);
+    void setLoadFactor(LoadFactor loadFactor);
+
+    default void resize(int newCapacity) {
+        throw new UnsupportedOperationException();
+    }
+
+    default double getAverageBucketSize() {
+        throw new UnsupportedOperationException();
+    }
+
+    default int getEmptyBuckets() {
+        throw new UnsupportedOperationException();
+    }
 }

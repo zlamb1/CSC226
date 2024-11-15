@@ -4,6 +4,7 @@ public abstract class AbstractMap<K, V> implements IMap<K, V> {
     protected int size;
     protected LoadFactor loadFactor = new LoadFactor(0.0, 0.75, false, true);
 
+    @Override
     public void setLoadFactor(LoadFactor loadFactor) {
         this.loadFactor = loadFactor;
         ensureLoadFactor();
