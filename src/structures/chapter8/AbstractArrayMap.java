@@ -62,7 +62,7 @@ public abstract class AbstractArrayMap<K, V, E extends IMapEntry<K, V>> extends 
     @Override
     public void resize(int newCapacity) {
         if (size > newCapacity) {
-            throw new IllegalArgumentException("Cannot resize HashMap to capacity smaller than current size.");
+            throw new IllegalArgumentException("Cannot resize map to capacity smaller than current size.");
         }
 
         ArrayList<E> list = table;
