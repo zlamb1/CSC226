@@ -25,5 +25,5 @@ public abstract class AbstractMap<K, V> implements IMap<K, V> {
     }
 
     public abstract boolean ensureLoadFactor();
-    public abstract boolean resize(int newCapacity);
+    public abstract void resize(int newCapacity);
 }

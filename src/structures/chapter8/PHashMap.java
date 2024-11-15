@@ -147,28 +147,4 @@ public class PHashMap<K, V> extends AbstractArrayMap<K, V, PHashMap.PMapEntry<K,
             case QUADRATIC -> (index + (cursor * cursor)) % table.size();
         };
     }
-
-    public boolean resize(int newCapacity) {
-        if (size > newCapacity) {
-            throw new IllegalArgumentException("Cannot resize HashMap to capacity smaller than current size.");
-        }
-
-        ArrayList<PMapEntry<K, V>> newTable = new ArrayList<>(null, newCapacity);
-
-        for (PMapEntry<K, V> entry : table) {
-            if (entry != null && !entry.isTombstone()) {
-                // rehash
-                int index = Math.abs(entry.getKey().hashCode()) % newCapacity, cursor = 0;
-                PMapEntry<K, V> _entry = newTable.get(getProbeIndex(index, cursor));
-                while (_entry != null) {
-                    cursor++;
-                    _entry = newTable.get(getProbeIndex(index, cursor));
-                }
-                newTable.set(getProbeIndex(index, cursor), entry);
-            }
-        }
-
-        table = newTable;
-        return true;
-    }
 }

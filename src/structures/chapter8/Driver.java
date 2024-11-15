@@ -17,7 +17,7 @@ public class Driver {
     }
 
     public static void hashMapTo25Test() {
-        IMap<Integer, Integer> hashMap = new PHashMap<>();
+        IMap<Integer, Integer> hashMap = new CHashMap<>();
         for (int i = 0; i < 25; i++) {
             hashMap.put(i, i);
         }
@@ -37,6 +37,6 @@ public class Driver {
     }
 
     public static void main(String[] args) {
-        hashMap100MillionTest();
+        hashMapTo25Test();
     }
 }

@@ -7,4 +7,5 @@ public interface IMap<K, V> extends Iterable<IMapEntry<K, V>> {
     boolean contains(K key);
     boolean isEmpty();
     int size();
+    void resize(int newCapacity);
 }

@@ -43,17 +43,40 @@ public abstract class AbstractArrayMap<K, V, E extends IMapEntry<K, V>> extends 
     @Override
     public boolean ensureLoadFactor() {
         if (shouldGrow()) {
-            return resize(getLargerCapacity(size));
+            resize(getLargerCapacity(size));
         } else if (shouldShrink()) {
-            return resize(getSmallerCapacity(size));
+            resize(getSmallerCapacity(size));
         } else {
             return false;
         }
+
+        return true;
     }
 
     @Override
     public Iterator<IMapEntry<K, V>> iterator() {
         return new ArrayMapIterator(table.iterator());
+    }
+
+    @Override
+    public void resize(int newCapacity) {
+        if (size > newCapacity) {
+            throw new IllegalArgumentException("Cannot resize HashMap to capacity smaller than current size.");
+        }
+
+        ArrayList<E> list = table;
+        table = new ArrayList<>(null, newCapacity);
+        size = 0;
+
+        for (E entry : list) {
+            if (entry != null) {
+                put(entry);
+            }
+        }
+    }
+
+    protected void put(E entry) {
+        put(entry.getKey(), entry.getValue());
     }
 
     protected int getLargerCapacity(int size) {
