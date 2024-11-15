@@ -2,33 +2,47 @@ package structures.chapter8;
 
 import structures.chapter6.ArrayList;
 
-import java.util.Iterator;
-
 /**
  * A hash map implementation that internally uses an ArrayList and open addressing.
  * @param <K> Key Type
  * @param <V> Value Type
  */
 
-public class HashMap<K, V> implements IBoundedMap<K, V> {
+public class PHashMap<K, V> extends AbstractArrayMap<K, V, PHashMap.PMapEntry<K, V>> {
+    public static class PMapEntry<K, V> extends AbstractMapEntry<K, V> {
+        protected boolean tombstone;
+
+        public PMapEntry(K key, V value) {
+            super(key, value);
+        }
+
+        public boolean isTombstone() {
+            return tombstone;
+        }
+
+        public void setTombstone(boolean tombstone) {
+            this.tombstone = tombstone;
+        }
+
+        @Override
+        public String toString() {
+            return key + ": " + value;
+        }
+    }
+
     public enum ProbingStrategy {
         LINEAR,
         QUADRATIC
     }
 
-    protected static int DEFAULT_CAPACITY = 16;
+    protected ProbingStrategy probingStrategy;
 
-    protected ArrayList<MapEntry<K, V>> table;
-    protected int size = 0;
-    protected LoadFactor loadFactor = new LoadFactor(0.1, 1.0, false, true);
-    protected ProbingStrategy probingStrategy = ProbingStrategy.LINEAR;
-
-    public HashMap() {
-        table = new ArrayList<>(null, DEFAULT_CAPACITY);
+    public PHashMap() {
+        this(ProbingStrategy.LINEAR);
     }
 
-    public HashMap(ProbingStrategy probingStrategy) {
-        this();
+    public PHashMap(ProbingStrategy probingStrategy) {
+        super();
         this.probingStrategy = probingStrategy;
     }
 
@@ -38,20 +52,20 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
             throw new IllegalArgumentException("Key cannot be null.");
         }
 
-        if (!resize() && size == table.size()) {
+        if (!ensureLoadFactor() && size == table.size()) {
             throw new MapOverflowException();
         }
-        
+
         int index = Math.abs(key.hashCode()) % table.size(), cursor = 0;
-        MapEntry<K, V> entry = table.get(index);
+        PMapEntry<K, V> entry = table.get(index);
         while (entry != null && !entry.isTombstone() && !entry.getKey().equals(key)) {
             // TODO: solve infinite loops with quadratic probing
             cursor++;
             entry = table.get(getProbeIndex(index, cursor));
         }
 
-        MapEntry<K, V> oldEntry = table.get(getProbeIndex(index, cursor));
-        table.set(getProbeIndex(index, cursor), new MapEntry<>(key, value));
+        PMapEntry<K, V> oldEntry = table.get(getProbeIndex(index, cursor));
+        table.set(getProbeIndex(index, cursor), new PMapEntry<>(key, value));
 
         if (oldEntry == null || oldEntry.isTombstone()) {
             size++;
@@ -69,7 +83,7 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
         }
 
         int index = Math.abs(key.hashCode()) % table.size(), cursor = 0;
-        MapEntry<K, V> entry = table.get(index);
+        PMapEntry<K, V> entry = table.get(index);
         while (entry != null) {
             if (!entry.isTombstone() && entry.getKey().equals(key)) {
                 return entry.getValue();
@@ -90,7 +104,7 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
         }
 
         int index = Math.abs(key.hashCode()) % table.size(), cursor = 0;
-        MapEntry<K, V> entry = table.get(index);
+        PMapEntry<K, V> entry = table.get(index);
         while (entry != null) {
             if (!entry.isTombstone() && entry.getKey().equals(key)) {
                 int next = getProbeIndex(index, cursor + 1);
@@ -101,7 +115,7 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
                 }
 
                 size--;
-                resize();
+                ensureLoadFactor();
 
                 return entry.getValue();
             }
@@ -114,40 +128,10 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
     }
 
     @Override
-    public boolean contains(K key) {
-        return get(key) != null;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    @Override
-    public boolean isFull() {
-        return size == table.size();
-    }
-
-    @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
-    public Iterator<MapEntry<K, V>> iterator() {
-        return table.iterator();
-    }
-
-    public void setLoadFactor(LoadFactor loadFactor) {
-        this.loadFactor = loadFactor;
-        resize();
-    }
-
-    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("{");
         int i = 0;
-        for (MapEntry<K, V> entry : table) {
+        for (PMapEntry<K, V> entry : table) {
             if (entry != null && !entry.isTombstone()) {
                 if (i != 0) stringBuilder.append(", ");
                 stringBuilder.append(entry);
@@ -164,18 +148,18 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
         };
     }
 
-    public boolean resize(int capacity) {
-        if (size > capacity) {
+    public boolean resize(int newCapacity) {
+        if (size > newCapacity) {
             throw new IllegalArgumentException("Cannot resize HashMap to capacity smaller than current size.");
         }
 
-        ArrayList<MapEntry<K, V>> newTable = new ArrayList<>(null, capacity);
+        ArrayList<PMapEntry<K, V>> newTable = new ArrayList<>(null, newCapacity);
 
-        for (MapEntry<K, V> entry : table) {
+        for (PMapEntry<K, V> entry : table) {
             if (entry != null && !entry.isTombstone()) {
                 // rehash
-                int index = Math.abs(entry.getKey().hashCode()) % capacity, cursor = 0;
-                MapEntry<K, V> _entry = table.get(getProbeIndex(index, cursor));
+                int index = Math.abs(entry.getKey().hashCode()) % newCapacity, cursor = 0;
+                PMapEntry<K, V> _entry = newTable.get(getProbeIndex(index, cursor));
                 while (_entry != null) {
                     cursor++;
                     _entry = newTable.get(getProbeIndex(index, cursor));
@@ -186,41 +170,5 @@ public class HashMap<K, V> implements IBoundedMap<K, V> {
 
         table = newTable;
         return true;
-    }
-
-    protected boolean resize() {
-        if (shouldGrow()) {
-            return resize(getLargerCapacity(size));
-        } else if (shouldShrink()) {
-            return resize(getSmallerCapacity(size));
-        } else {
-            return false;
-        }
-    }
-
-    protected int getLargerCapacity(int size) {
-        int capacity = table.size();
-        while (((double) size / capacity) >= loadFactor.getUpperBound()) {
-            capacity *= 2;
-        }
-        return capacity;
-    }
-
-    protected int getSmallerCapacity(int size) {
-        int capacity = table.size();
-        while (((double) size / capacity) <= loadFactor.getLowerBound()) {
-            capacity /= 2;
-        }
-        return capacity;
-    }
-
-    protected boolean shouldGrow() {
-        double load = (double) size / table.size();
-        return loadFactor.shouldUseUpperBound() && load >= loadFactor.getUpperBound();
-    }
-
-    protected boolean shouldShrink() {
-        double load = (double) size / table.size();
-        return loadFactor.shouldUseLowerBound() && load <= loadFactor.getLowerBound();
     }
 }

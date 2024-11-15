@@ -2,7 +2,7 @@ package structures.chapter8;
 
 public class Driver {
     public static void hashMapStringTest() {
-        HashMap<String, Integer> map = new HashMap<>();
+        PHashMap<String, Integer> map = new PHashMap<>();
         map.put("A", 1);
         map.put("B", 2);
         map.put("C", 3);
@@ -17,7 +17,7 @@ public class Driver {
     }
 
     public static void hashMapTo25Test() {
-        HashMap<Integer, Integer> hashMap = new HashMap<>(HashMap.ProbingStrategy.QUADRATIC);
+        IMap<Integer, Integer> hashMap = new PHashMap<>();
         for (int i = 0; i < 25; i++) {
             hashMap.put(i, i);
         }
@@ -28,7 +28,7 @@ public class Driver {
     }
 
     public static void hashMap100MillionTest() {
-        HashMap<Integer, Integer> hashMap = new HashMap<>(HashMap.ProbingStrategy.LINEAR);
+        CHashMap<Integer, Integer> hashMap = new CHashMap<>();
         // reserve
         hashMap.resize(100_000_001);
         for (int i = 0; i < 100_000_000; i++) {
