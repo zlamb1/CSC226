@@ -1,6 +1,7 @@
 package structures.chapter9;
 
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class ArrayPriorityQueue<T> implements IBoundedPriorityQueue<T> {
@@ -24,26 +25,33 @@ public class ArrayPriorityQueue<T> implements IBoundedPriorityQueue<T> {
             throw new IllegalArgumentException("Element cannot be null.");
         }
 
-        if (size == array.length) {
+        if (isFull()) {
             ensureCapacity(size + 1);
         }
 
         array[size++] = element;
-        size++;
     }
 
     @Override
     public T dequeue() throws PriorityQueueUnderflow {
-        if (size == 0) {
+        if (isEmpty()) {
             throw new PriorityQueueUnderflow();
         }
 
-        T element = array[0];
-        for (T current : array) {
+        int index = 0;
+        T element = array[index];
+
+        for (int i = 0; i < size; i++) {
+            T current = array[i];
             int cmp = comparator.compare(current, element);
             if (cmp > 0) {
                 element = current;
+                index = i;
             }
+        }
+
+        for (int i = index + 1; i < size--; i++) {
+            array[i - 1] = array[i];
         }
 
         return element;

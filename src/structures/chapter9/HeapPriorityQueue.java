@@ -160,13 +160,13 @@ public class HeapPriorityQueue<T> implements IBoundedPriorityQueue<T> {
                 stringBuilder.append("\n");
                 if (right <= lastIndex) {
                     stringBuilder
-                            .append(prefix)
-                            .append("├─")
-                            .append(getNodeAsString(left,prefix + "│ "))
-                            .append("\n")
-                            .append(prefix)
-                            .append("└─")
-                            .append(getNodeAsString(right, prefix + "  "));
+                        .append(prefix)
+                        .append("├─")
+                        .append(getNodeAsString(left,prefix + "│ "))
+                        .append("\n")
+                        .append(prefix)
+                        .append("└─")
+                        .append(getNodeAsString(right, prefix + "  "));
                 } else {
                     stringBuilder.append(prefix).append("└─").append(getNodeAsString(left, prefix));
                 }

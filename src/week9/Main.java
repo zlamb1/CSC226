@@ -3,18 +3,23 @@ package week9;
 import structures.chapter8.CHashMap;
 import structures.chapter8.IMap;
 import structures.chapter8.LoadFactor;
+import structures.chapter8.PHashMap;
 import week8.Movie;
+
+import java.util.Random;
 
 public class Main {
     public static void testPrimeBucketEfficiency() {
         for (int i = 0; i < 3; i++) {
-            IMap<Integer, Integer> map = new CHashMap<>();
+            IMap<Integer, Integer> map = new PHashMap<>();
             map.setLoadFactor(new LoadFactor(0.0, 1.0, false, false));
             int len = 100 + i;
             map.resize(len);
 
+            Random random = new Random();
+
             for (int j = 0; j < 100; j++) {
-                int key = (int) (Math.random() * 200 + 100), value = (int) (Math.random() * 100 + 100);
+                int key = (int) (random.nextDouble() * 100 + 100), value = (int) (random.nextDouble() * 100 + 100);
                 map.put(key, value);
             }
 
@@ -30,7 +35,7 @@ public class Main {
         for (int i = 0; i < 100; i++) {
             int key = (int) (Math.random() * 100 + 100), value = (int) (Math.random() * 100 + 100);
             map.put(key, value);
-            if (i == 70) {
+            if (i == 69) {
                 System.out.println("getEmptyBuckets at 70: " + map.getEmptyBuckets());
             }
         }

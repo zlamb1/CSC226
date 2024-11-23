@@ -1,5 +1,6 @@
 package structures.chapter9;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Driver {
@@ -24,7 +25,19 @@ public class Driver {
         }
     }
 
+    public static void testListPQ() {
+        IPriorityQueue<Integer> queue = new ArrayListPriorityQueue<>(Comparator.comparingInt(a -> a));
+
+        for (int i = 3; i >= 0; i--) {
+            queue.enqueue(i);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            System.out.println(queue.dequeue());
+        }
+    }
+
     public static void main(String[] args) {
-        testBSTPQ();
+        testHeap();
     }
 }
