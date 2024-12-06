@@ -61,6 +61,20 @@ public abstract class ListPriorityQueue<T> implements IBoundedPriorityQueue<T> {
         return size == list.size();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = size - 1; i >= 0; i--) {
+            stringBuilder.append(list.get(i));
+            if (i != 0) {
+                stringBuilder.append(" ← ");
+            }
+        }
+
+        return stringBuilder.toString();
+    }
+
     protected int binarySearch(T element) {
         int low = 0, high = size - 1;
         while (low <= high) {
