@@ -87,18 +87,8 @@ public class HeapSort {
     }
 
     public static void main(String[] args) {
-        int[] array = IntStream.generate(() -> new Random().nextInt(100)).limit(100_000).toArray();
-
-        long startTime = System.nanoTime();
-        insertionSort(array);
-        long endTime = System.nanoTime();
-        System.out.println("Insertion sort took " + (endTime - startTime) / 1_000_000 + "ms");
-
-        array = IntStream.generate(() -> new Random().nextInt(100)).limit(100_000).toArray();
-        startTime = System.nanoTime();
-        binaryInsertionSort(array);
-        endTime = System.nanoTime();
-        System.out.println("Binary insertion sort took " + (endTime - startTime) / 1_000_000 + "ms");
-        System.out.println(Arrays.toString(array));
+        SortTest.testSort(HeapSort::insertionSort, "Insertion sort");
+        SortTest.testSort(HeapSort::binaryInsertionSort, "Binary insertion sort");
+        SortTest.testSort(HeapSort::heapSort, "Heap sort");
     }
 }
